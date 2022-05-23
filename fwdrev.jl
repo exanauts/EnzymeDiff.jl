@@ -1,20 +1,18 @@
 using Enzyme
 using LinearAlgebra
-Enzyme.API.printall!(true)
-Enzyme.API.printtype!(true)
+# Enzyme.API.printall!(true)
+# Enzyme.API.printtype!(true)
 
 n = 10
 function speelpenning(y, x)
-    for i in 1:length(x)
-        y[1] += x[i] * x[i]
-    end
+    y .= x .* x
     return nothing
 end
 
 function reverse(y::VT, x::VT) where {VT}
     FT = eltype(x)
     rx = convert(VT, zeros(FT,n))
-    ry = convert(VT, ones(FT,1))
+    ry = convert(VT, ones(FT,n))
 
     _x = Duplicated(x, rx)
     _y = Duplicated(y, ry)
@@ -26,7 +24,7 @@ end
 function forward_over_reverse(y::VT, x::VT) where {VT}
     FT = eltype(x)
     dx = convert(VT, ones(FT,n)); rx = convert(VT, zeros(FT,n)); drx = convert(VT, zeros(FT,n))
-    dy = convert(VT, zeros(FT,1)); ry = convert(VT, ones(FT,1)); dry = convert(VT, zeros(FT,1))
+    dy = convert(VT, zeros(FT,n)); ry = convert(VT, ones(FT,n)); dry = convert(VT, zeros(FT,n))
 
     function foo(y, x)
         autodiff_deferred(speelpenning, Const, y, x)
@@ -41,13 +39,13 @@ function forward_over_reverse(y::VT, x::VT) where {VT}
 end
 x = [i/(1.0+i) for i in 1:n]
 # x = ones(n)
-y = zeros(1)
+y = zeros(n)
 speelpenning(y,x)
 @show y
 
 g = reverse(y, x)
 g1, g2 = forward_over_reverse(y,x)
-all(g .== g1)
+@show all(g .== g1)
 
 # using CUDA
 
