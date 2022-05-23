@@ -1,12 +1,13 @@
 using Enzyme
+using LinearAlgebra
 Enzyme.API.printall!(true)
 Enzyme.API.printtype!(true)
 
 n = 10
 function speelpenning(y, x)
-    y .= mapreduce(x -> x,*, x; dims=:, init=1.0)
-    # y .= mapreduce(identity,*, x; dims=:)
-    # y .= foldl(*, x; init=one)
+    for i in 1:length(x)
+        y[1] += x[i] * x[i]
+    end
     return nothing
 end
 
@@ -48,11 +49,11 @@ g = reverse(y, x)
 g1, g2 = forward_over_reverse(y,x)
 all(g .== g1)
 
-using CUDA
+# using CUDA
 
-cux = x |> CuArray
-cuy = y |> CuArray
+# cux = x |> CuArray
+# cuy = y |> CuArray
 
-speelpenning(cuy,cux)
+# speelpenning(cuy,cux)
 
-cug = reverse(cuy, cux)
+# cug = reverse(cuy, cux)
