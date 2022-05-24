@@ -1,9 +1,9 @@
 using Enzyme
 using LinearAlgebra
-# Enzyme.API.printall!(true)
-# Enzyme.API.printtype!(true)
+Enzyme.API.printall!(true)
+Enzyme.API.printtype!(true)
 
-n = 10
+n = 2
 function speelpenning(y, x)
     y .= x .* x
     return nothing
@@ -37,21 +37,14 @@ function forward_over_reverse(y::VT, x::VT) where {VT}
     fwddiff(foo, _y, _x)
     return rx, drx
 end
+
 x = [i/(1.0+i) for i in 1:n]
-# x = ones(n)
 y = zeros(n)
 speelpenning(y,x)
-@show y
 
 g = reverse(y, x)
+
+# Crashes
 g1, g2 = forward_over_reverse(y,x)
+# This test should pass
 @show all(g .== g1)
-
-# using CUDA
-
-# cux = x |> CuArray
-# cuy = y |> CuArray
-
-# speelpenning(cuy,cux)
-
-# cug = reverse(cuy, cux)
